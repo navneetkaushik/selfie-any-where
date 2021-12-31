@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Roulette Selfie</title>
+</head>
+
+<body style="margin:0;">
+<iframe id="noraml" style="width:100vw; height:100vh; border:0; display: none;" src="normal"></iframe>
+<iframe id="ios" style="width:100vw; height:100vh; border:0; display: none;" src="selfie-ios"></iframe>
+
+<script>
+	function iOS() {
+	  return [
+		'iPad Simulator',
+		'iPhone Simulator',
+		'iPod Simulator',
+		'iPad',
+		'iPhone',
+		'iPod'
+	  ].includes(navigator.platform)
+	  // iPad on iOS 13 detection
+	  || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+	}
+
+	if(iOS()==true){console.log('ios');
+		document.getElementById('noraml').style.display='none';
+		document.getElementById('ios').style.display='block';
+	}else{
+		document.getElementById('ios').style.display='none';
+		document.getElementById('noraml').style.display='block';
+	}
+</script>
+</body>
+</html>

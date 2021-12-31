@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Roulette Selfie</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles.dffc271e.css" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+        <style>
+            #canvas-output,
+            #video-output {
+                width: 100vw;
+                height: 100vh;
+                position: fixed;
+                left: 0;
+                top: 0;
+                object-fit: fill;
+            }
+            main > .configuration {
+                position: fixed;
+                left: 0;
+                bottom: 0;
+                max-width: 100%;
+                display: inline-block;
+                margin: auto;
+                width: 350px;
+                right: 0;
+            }
+            main > .configuration > .card {
+                background-color: hsla(0, 0%, 100%, 0);
+            }
+            .cameraControls {
+                position: absolute;
+                bottom: 0;
+                width: auto;
+                right: 0;
+                border-radius: 20px 0 0 0;
+                z-index: 999;
+                /*background: #000;*/
+                opacity: 0.7;
+                padding: 10px;
+            }
+            @media screen and (max-width: 768px) {
+                .cameraControls {
+                    bottom: auto;
+                    top: -1px;
+                    right: auto;
+                    left: 0;
+                    width: auto;
+                    border-radius: 0 0 20px 0;
+                }
+                #canvasPerson {
+                    bottom: -100vh !important;
+                }
+                #logo {
+                    width: 50% !important;
+                    right: -10% !important;
+                }
+				
+				#canvas-output,
+				#video-output {
+					width: 110vw;
+					height: 110vh;
+				}
+            }
+            .material-icons {
+                width: 100px;
+                font-size: 50px !important;
+                color: #000;
+                width: 80px;
+                height:65px;
+                background-color: #fff;
+                border-radius: 50%;
+                padding-top: 15px;
+                margin: 0 10px;
+                text-align: center;
+            }
+			
+			
+			
+			
+			.camera_info_site {width: 100%; height: 100vh; position: fixed; left: 0; top: 0; z-index: 9999; background: #000a; display: flex; justify-content: center; align-items: center;}
+			.camera_info_site_in {width:90%; max-width:750px; background: #fff9; border-radius: 20px;}
+			.camera_info_site_in h2 {text-align: center; font-size: 24px; color: #000; margin: 0; padding: 10px 0 0; font-family: arial;}
+			.info_site_li {width:calc(100% - 45px); margin: 0 0 0 36px; padding: 0;}
+			.info_site_li li {width: 100%; font-size:16px; color: #000; margin: 0; padding:7px 0; font-family: arial;}
+	
+	
+	
+			a.begain_exp_btn {
+			  padding: 0 0;
+			  background: #fff;
+			  height: 40px;
+			  display: inline-block;
+			  font-size: 16px;
+			  color: #000;
+			  text-decoration: none;
+			  text-transform: uppercase;
+			  line-height: 40px;
+			  border-radius: 10px;
+				animation:btnblink 5s linear alternate infinite;
+				width: 70%;
+				text-align: center;
+				margin-left: 15%;
+				margin-bottom: -10px;
+				margin-top: 10px;
+			}
+			a.begain_exp_btn:hover {
+			  background: #3d7edb;
+			  color: #fff;
+			  text-decoration: none;
+				animation:none;
+			}
+			
+			@keyframes btnblink {
+			  0%   {background: #fff; color: #3d7edb; text-decoration: none; -webkit-transform: scale(1); transform: scale(1);}
+			  25%  {background: #3d7edb; color: #fff; text-decoration: none; -webkit-transform: scale(1); transform: scale(1.1);}
+			  50%  {background: #000; color: #fff; text-decoration: none; -webkit-transform: scale(1); transform: scale(1);}
+			  100% {background: #3d7edb; color: #fff; text-decoration: none; -webkit-transform: scale(1); transform: scale(1.1);}
+			}
+        </style>
+    </head>
+    <body>
+    	<div class="camera_info_site" id="camera_info_site">
+            <div class="camera_info_site_in">
+                <h2>Important Disclaimer</h2>
+                <ul class="info_site_li">
+                    <li>Use proper lighting while taking photos.</li>
+                    <li>Do not use direct light in the background.</li>
+                    <li>Do not shake while clicking the pictures.</li>
+                    <li>Do not take pictures in the dark.</li>
+                    <li>Do not click blurry pictures or before setting the camera focus.</li>
+                </ul>
+                <a href="javascript:void(0);" id="cameraOnButton" class="begain_exp_btn" onClick="flag=true;$('#camera_info_site').hide();$('#mainDiv').show();">Begin Your Experience</a>
+            </div>
+        </div>
+        
+        
+        <main id="mainDiv" role="main" style="display: none;">
+        	<div id="loader" style="display: none; left: 0; position: absolute; z-index: 9999; width: 100vw; height: 100vh; background-color: black; opacity: 0.3; color: white; margin: 0; top: 0;">
+                <span style="margin-top: 50vh; margin-left: 40vw; display: block;"></span>
+                <style>
+                    #loader span {
+                      border: 16px solid #f3f3f3; /* Light grey */
+                      border-top: 16px solid #3498db; /* Blue */
+                      border-radius: 50%;
+                      width: 120px;
+                      height: 120px;
+                      animation: spin 2s linear infinite;
+                    }
+                    
+                    @keyframes spin {
+                      0% { transform: rotate(0deg); }
+                      100% { transform: rotate(360deg); }
+                    }
+					
+					@media screen and (max-width: 768px) {
+						#loader span {
+						  width: 60px;
+						  height: 60px;
+						}
+					}
+                </style>
+            </div>
+            <section class="viewers" id="selfie-container" style="width: 100vw; height: 100vh;">
+                <img id="logo" src="logo.4f76f276.png" style="position: absolute; z-index: 99999; width: 20%; top: 20px; right: 0;" />
+                <div class="source" style="display: none;">
+                    <h3>Source</h3>
+                    <div><video id="video-source" class="video_full_sc" style="height: 100vh; width: 100vw;" autoplay playsinline=""></video></div>
+                </div>
+                <div class="output">
+                    <div>
+                    	<video id="video-output" width="480" height="320" autoplay playsinline="" style="transform: scaleX(-1);"></video> 
+                    	<canvas id="canvas-output" width="480" height="320" style="transform: scaleX(-1);"></canvas>
+                    </div>
+                </div>
+            </section>
+            <section class="configuration">
+                <div class="background card">
+                    <div>
+                        <button id="noBackground" title="none"><img src="RemoveIcon.c9bba2d5.c9bba2d5.png" /></button> 
+                        <button id="blurBackground" title="blur" style="display: none;"><img src="Blur.63c68379.63c68379.png" /></button>
+                        <span id="landscape" style="float: right;">
+                        	<button id="virutalBackgroundLandscape1" title="image"><img src="Casino Render New 1.dfe8bb26.jpg" /></button>
+                        	<button id="virutalBackgroundLandscape2" title="image"><img crossorigin src="background.63f1bc03.63f1bc03.jpeg" /></button>
+                            <button id="virutalBackgroundLandscape3" title="image"><img crossorigin src="6.jpg" /></button>
+                            <button id="virutalBackgroundLandscape4" title="image"> <img crossorigin src="Casino Render New 1_06.jpg"></button>
+                        </span>
+                        <span id="portrait" style="float: right;">
+                        	<button id="virutalBackgroundPortrait1" title="image" style="margin-right:3px;"><img src="Casino Render New 1_01 (1).jpg" /></button>
+                        	<button id="virutalBackgroundPortrait2" title="image"><img crossorigin src="Casino Render New 1_02.jpg" /></button>
+                            <button id="virutalBackgroundPortrait3" title="image"><img crossorigin src="Casino Render New 1_04.jpg" /></button>
+                            <button id="virutalBackgroundPortrait4" title="image"> <img crossorigin src="Casino Render New 1_05.jpg"></button>
+                        </span>
+                        <span id="test" style="color:white;"></span>
+                    </div>
+                </div>
+                <div class="card controls" style="display: none;">
+                    <div>
+                        <h3>Controls</h3>
+                        <div class="customization">
+                            <label>Library</label>
+                            <select id="librarySelect">
+                                <option value="bodypix">Bodypix</option>
+                                <option value="mediapipe">MediaPipe</option>
+                                <option value="vectorly">Vectorly</option>
+                            </select>
+                        </div>
+                        <div class="customization">
+                            <label for="backgroundBlur">Blur Amount: <span id="blurAmount"></span></label> <input disabled type="range" id="backgroundBlur" name="backgroundBlur" min="1" max="10" value="3" step="1" />
+                        </div>
+                        <div class="customization">
+                            <label for="edgeBlur">Edge Blur Amount: <span id="edgeBlurAmount"></span></label> <input disabled type="range" id="edgeBlur" name="edgeBlur" min="1" max="10" value="4" step="1" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div id="cameraControls" class="cameraControls">
+                <a href="#" id="take-photo1" title="Take Photo"><i class="material-icons">camera_alt</i></a>
+            </div>
+        </main>
+        <script src="src.91974396.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+        <script>
+            $(document).ready(function(){
+				document.getElementById("take-photo1").addEventListener("click", function() {
+					html2canvas(document.querySelector('#selfie-container')).then(function(canvas) {
+						console.log(canvas);
+						saveAs(canvas.toDataURL(), 'MY Roulette Selfie.png');
+					});
+				});
+				
+				
+				function saveAs(uri, filename) {
+				
+					var link = document.createElement('a');
+				
+					if (typeof link.download === 'string') {
+						link.href = uri;
+						link.download = filename;
+				
+						//Firefox requires the link to be in the body
+						document.body.appendChild(link);
+				
+						//simulate click
+						link.click();
+				
+						//remove the link when done
+						document.body.removeChild(link);
+				
+					} else {
+				
+						window.open(uri);
+				
+					}
+				}
+			});
+			
+			function landPort(){
+				var e = window.matchMedia("(min-aspect-ratio: 4/3)");
+				e.matches
+					? ((orientation = "landscape"), (document.getElementById("portrait").style.display = "none"), (document.getElementById("landscape").style.display = "block"))
+					: ((orientation = "portrait"), (document.getElementById("landscape").style.display = "none"), (document.getElementById("portrait").style.display = "block"));
+			}
+			
+			landPort();
+			$(window).resize(function() {
+            	landPort(); 
+            });
+				
+        </script>
+    </body>
+</html>

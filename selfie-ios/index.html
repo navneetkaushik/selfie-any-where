@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Roulette Selfie</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel='stylesheet' type='text/css' media='screen' href='style/selfie-anywhere.css'>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="js/tensorflow.js"></script>
+    <script src="js/segment.js"></script>
+    <script src='js/html2canvas.min.js'></script>
+    <script type="text/javascript" src="js/webcam.js"></script>
+    <script src='js/webcam-ui-lib.js'></script>
+    <style>
+        main > .configuration {
+                position: fixed;
+                left: 0;
+                bottom: 0;
+                max-width: 100%;
+                display: inline-block;
+                margin: auto;
+                width: 230px;
+                right: 0;
+            }
+            main > .configuration > .card {
+                background-color: hsla(0, 0%, 100%, 0);
+            }
+
+            .cameraControls {z-index: 99999; opacity: 1;}
+            
+            @media screen and (max-width: 768px) {
+                .cameraControls {
+                    bottom: auto;
+                    top: -1px;
+                    right: auto;
+                    left: 0;
+                    width: auto;
+                    border-radius: 0 0 20px 0;
+                }
+               
+                #logo {
+                    width: 50% !important;
+                    right: -10% !important;
+                }
+				
+				
+            }
+            .material-icons {
+                width: 100px;
+                font-size: 50px !important;
+                color: #000;
+                width: 80px;
+                height:80px;
+                background-color: #fff;
+                border-radius: 50%;
+                padding-top: 15px;
+                margin: 0 10px;
+                text-align: center;
+            }
+			
+			
+			
+			
+			.camera_info_site {width: 100%; height: 100vh; position: fixed; left: 0; top: 0; z-index: 9999; background: #000a; display: flex; justify-content: center; align-items: center;}
+			.camera_info_site_in {width:90%; max-width:750px; background: #fff9; border-radius: 20px;}
+			.camera_info_site_in h2 {text-align: center; font-size: 24px; color: #000; margin: 0; padding: 10px 0 0; font-family: arial; font-weight: bold;}
+			.info_site_li {width:calc(100% - 45px); margin: 0 0 0 36px; padding: 0;}
+			.info_site_li li {width: 100%; font-size:16px; color: #000; margin: 0; padding:2px 0; font-family: arial;}
+	
+	span.begain_exp_btn {
+			  padding: 0 0;
+			  background: #fff;
+			  height: 40px;
+			  display: inline-block;
+			  font-size: 16px;
+			  color: #000;
+			  text-decoration: none;
+			  text-transform: uppercase;
+			  line-height: 40px;
+			  border-radius: 10px;
+				animation:btnblink 5s linear alternate infinite;
+				width: 70%;
+				text-align: center;
+				margin-left: 15%;
+				margin-bottom: -10px;
+				margin-top: 10px;
+				cursor: pointer;
+			}
+			span.begain_exp_btn:hover {
+			  background: #3d7edb;
+			  color: #fff;
+			  text-decoration: none;
+				animation:none;
+			}
+	
+			a.begain_exp_btn {
+			  padding: 0 0;
+			  background: #fff;
+			  height: 40px;
+			  display: inline-block;
+			  font-size: 16px;
+			  color: #000;
+			  text-decoration: none;
+			  text-transform: uppercase;
+			  line-height: 40px;
+			  border-radius: 10px;
+				animation:btnblink 5s linear alternate infinite;
+				width: 70%;
+				text-align: center;
+				margin-left: 15%;
+				margin-bottom: -10px;
+				margin-top: 10px;
+			}
+			a.begain_exp_btn:hover {
+			  background: #3d7edb;
+			  color: #fff;
+			  text-decoration: none;
+				animation:none;
+			}
+			
+			@keyframes btnblink {
+			  0%   {background: #fff; color: #3d7edb; text-decoration: none; -webkit-transform: scale(1); transform: scale(1);}
+			  25%  {background: #3d7edb; color: #fff; text-decoration: none; -webkit-transform: scale(1); transform: scale(1.1);}
+			  50%  {background: #000; color: #fff; text-decoration: none; -webkit-transform: scale(1); transform: scale(1);}
+			  100% {background: #3d7edb; color: #fff; text-decoration: none; -webkit-transform: scale(1); transform: scale(1.1);}
+			}
+
+			.img_botm {position: fixed; left:0; width: 100%; text-align: center; bottom: 100px; z-index: 9999; }
+			.img_botm img {width:60px; height:60px; border:1px solid #fff; margin: 0 3px; border-radius: 5px; }
+
+			.img_botm {display:none;}
+			.d-none + .img_botm {display: block;}
+        </style>
+</head>
+
+<body>
+    <main id="selfie-anywhere-app">
+        <div class="camera_info_site" id="camera_info_site">
+            <div class="camera_info_site_in">
+                <h2>Important Disclaimer</h2>
+                <ul class="info_site_li">
+                    <li>Use proper lighting while taking photos.</li>
+                    <li>Do not use direct light in the background.</li>
+                    <li>Do not shake while clicking the pictures.</li>
+                    <li>Do not take pictures in the dark.</li>
+                    <li>Do not click blurry pictures or before setting the camera focus.</li>
+                </ul>
+                <label style="width: 100%; float: left;"> <input type="checkbox" id="webcam-switch" style="position: absolute; right: 120%; opacity: 0;">
+                    <span id="webcam-caption" class="begain_exp_btn" onClick="flag=true;$('#camera_info_site').hide();$('#mainDiv').show();">Begin Your Experience</a>
+                </label>
+                
+            </div>
+        </div>
+       
+        <div id="errorMsg" class="col-12 alert-danger d-none">
+            Fail to start camera <br />
+            Please allow permision to access camera <br />
+            If you are browsing through social media built in browsers, <br />
+            you would need to open the page in Sarafi (iPhone)/ Chrome (Android)
+        </div>
+        <div class="md-modal md-effect-12">
+            <div id="app-panel" class="app-panel md-content">
+                <div id="webcam-container" class="webcam-container d-none">
+                    
+                    <video id="webcam" autoplay playsinline width="640" height="480"></video>
+                    <div id="selfie-container">
+                    	<img id="logo" src="logo.de01bb0e.png" style="position: absolute; z-index: 99999; width: 20%; top: 20px; right: 0;" />
+                        <div id="background-container">
+                            <div class="spinner-border d-none" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                        <canvas id="canvasPerson" width="640" height="480"></canvas>
+                    </div>
+                    <div class="flash"></div>
+                </div>
+                <div id="cameraControls" class="cameraControls">
+                    <a href="#" id="take-photo" title="Take Photo"><i class="material-icons">camera_alt</i></a>
+                    <a href="#" id="download-photo" download="selfie.png" target="_blank" title="Save Photo" class="d-none" style="position: fixed;
+    					left: 0; bottom: 100px; right: 0; margin: auto; z-index: 99999"><i class="material-icons">file_download</i></a>
+                    <a href="#" id="resume-camera" title="Resume Camera" class="d-none"><i class="material-icons">
+                            undo
+                        </i></a>
+
+                        <div class="img_botm">
+                    
+                    <img src="images/dfe8bb26.jpg" onclick="setBackground(1)">
+                    <img src="images/background.63f1bc03.63f1bc03.jpeg" onclick="setBackground(0)">
+                    <img src="images/CasinoRenderNew1_04.jpg" onclick="setBackground(2)">
+                    <img src="images/CasinoRenderNew1_05.jpg" onclick="setBackground(3)">
+                </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="md-overlay"></div>
+    </main>
+    <script src='js/selfie-anywhere.js'></script>
+</body>
+
+</html>
